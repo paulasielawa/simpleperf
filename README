@@ -1,0 +1,63 @@
+Simpleperf
+
+Overview
+Simpleperf is my own simplified version of iperf using sockets. This is Python-based command-line tool that will run
+on a virtual network managed by mininet inside a virtual machine. It's created to measure performance of network.
+It runs in to modes: server mode and client mode. The client mode specifies the amount of data to be sent, and the server
+accepts the data in chunks (1000 bytes) and counts how much data was received during from the connected clients.
+Tool provides options to configure various parameters, such as the port number, IP address, format (B, KB, MB), total
+duration of data generation, transfer number of bytes specified by -n flag (e.g., 10B, 10KB, 10MB), printing statistics
+at user-selected intervals, and number of parallel connections.
+
+Requirements
+- Python 3.6
+- Mininet ()
+- A virtual machine (e.g. VirtualBox, UTM - when you have MAC) with a Linux-based operating system (Ubuntu 20.04.6 LTS
+  (Focal Fossa))
+
+Installation
+1. Set up a virtual machine with a Linux-based operating system and install Mininet by following the instructions
+   on the Mininet download page (http://mininet.org/download/)
+2. Python 3 or higher
+3. Clone the simpleperf repository to the virtual machine
+4. Open terminal and navigate to the directory containing the source code.
+
+Usage
+Running simpleperf with mininet
+1. In my repository there is already custom network topology (portfolio-topology.py) which can run with the following
+   command:
+   sudo python3 portfolio-topology.py
+
+2. There is a possibility that specified TCP/UDP port number will need to be removed (to start Mininet properly)
+   in that case run the following command:
+   sudo fuser -k 665
+
+3. Once the Mininet starts, you can run the simpleperf tool on different hosts within the custom network topology.
+   Run:
+   xterm h1 h7 (can choose whatever you wants numbers of hosts)
+
+4. In this case it will open two windows, in the terminal hor host 'h1', run simpleperf in server mode:
+   python3 simpleperf.py -s
+
+   Here is an example how one should be able to invoke the server:
+   python3 simpleperf -s -b <ip_address> -p <portnumber> -f MB
+
+5. In the terminal hor host 'h7', run simpleperf in client mode:
+   python3 simpleperf.py -c
+
+   To operate simpleperf in client mode, it should be invoked as follows, it depends on the user what parameters
+   would like to use:
+   python3 simpleperf -c -I <server_ip> -p <server_port> -t <time>
+
+Customization
+- The server and client listens on port 8088 by default, but it can be modified in the simpleperf.py file if necessary
+  or just by writing the simpleperf command with correct arguments -p flag (server, client).
+- Server's IP address is by default 0.0.0.0 which means that a server is configured to listen on 0.0.0.0 is listening
+  on all avaiable network interfaces, including localhost address (127.0.0.1), it can be modified in the simpleperf.py
+  file if necessary or just by writing the simpleperf command with correct arguments -b flag (server) or -I (client).
+- The client sends data in chunks of up to 1000 bytes (data variable) by default, but you can modify this in
+  the client.py or utils.py file if necessary.
+
+Contributors
+    Paula Sielawa (sielawapaula@gmail.com) - author
+
